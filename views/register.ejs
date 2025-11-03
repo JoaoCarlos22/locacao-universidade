@@ -1,0 +1,55 @@
+<%- include('./partials/header') %>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h3 class="card-title mb-3 text-center">Cadastro de Usuário</h3>
+          <% if (typeof error !== 'undefined') { %>
+            <div class="alert alert-danger"><%= error %></div>
+          <% } %>
+          <form action="/register" method="POST">
+            <div class="mb-3">
+              <label for="name" class="form-label">Nome</label>
+              <input type="text" class="form-control" id="name" name="name" required placeholder="Seu nome completo">
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">E-mail</label>
+              <input type="email" class="form-control" id="email" name="email" required placeholder="seu@exemplo.com">
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Senha</label>
+              <input type="password" class="form-control" id="password" name="password" required placeholder="Senha">
+            </div>
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">Confirmar senha</label>
+              <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required placeholder="Repita a senha">
+            </div>
+
+            <div class="mb-3">
+              <label for="role" class="form-label">Perfil</label>
+              <select class="form-select" id="role" name="role" required>
+                <option value="colaborador">Colaborador</option>
+                <option value="admin">Administrador</option>
+                <option value="diretor">Diretor</option>
+              </select>
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-success">Cadastrar</button>
+            </div>
+          </form>
+
+          <hr>
+
+          <p class="text-center mb-0">
+            Já tem conta? <a href="/login">Entrar</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('./partials/footer') %>
