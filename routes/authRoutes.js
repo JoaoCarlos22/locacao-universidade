@@ -1,4 +1,5 @@
 const express = require('express');
+const { telaLogin, telaRegistro, login, register, logout } = require('../services/authServices');
 const router = express.Router();
 
 router.get('/login', telaLogin);
