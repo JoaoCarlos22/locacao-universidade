@@ -6,3 +6,5 @@ router.post('/login', login);
 router.get('/register', telaRegistro);
 router.post('/register', register);
 router.get('/logout', logout);
+
+module.exports = router;
