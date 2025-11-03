@@ -1,5 +1,6 @@
 const express = require('express');
 const session = require('express-session');
+const expressLayouts = require('express-ejs-layouts');
 const bodyParser = require('body-parser');
 const authRoutes = require('./routes/authRoutes');
 const reservasRoutes = require('./routes/reservasRoutes');
@@ -20,13 +21,15 @@ app.use(session({
 }));
 app.set('view engine', 'ejs');
 app.set('views', './views');
+app.use(expressLayouts);
+app.set('layout', './layouts/main');
 app.use(express.static('public'));
 app.use('/', authRoutes);
-app.use('/reservas', reservasRoutes);
+/* app.use('/reservas', reservasRoutes);
 app.use('/colaborador', colaboradorRoutes);
 app.use('/admin', adminRoutes);
-app.use('/diretor', diretorRoutes);
+app.use('/diretor', diretorRoutes); */
 
 app.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
+    console.log(`Servidor rodando em http://localhost:${PORT}/login`);
 });
