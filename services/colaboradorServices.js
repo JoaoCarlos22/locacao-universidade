@@ -66,7 +66,7 @@ exports.reservar = async (req, res) => {
 
         if (!local_id || !motivo || !inicio_per || !fim_per) {
             req.session.mensagem = 'Informe o local, motivo, início e fim da reserva.';
-            return res.redirect('/colaborador/home');
+            return res.redirect('/colaborador/dashboard');
         }
 
         const parseDate = (dateStr) => {
@@ -79,13 +79,13 @@ exports.reservar = async (req, res) => {
 
         if (new Date(inicioPer_parse) >= new Date(fimPer_parse)) {
             req.session.mensagem = 'O período de início deve ser anterior ao período de fim.';
-            return res.redirect('/colaborador/home');
+            return res.redirect('/colaborador/dashboard');
         }
 
         const [rowsLocal] = await pool.query('SELECT id FROM locais WHERE id = ?', [local_id]);
         if (rowsLocal.length === 0) {
             req.session.mensagem = 'Local selecionado não existe.';
-            return res.redirect('/colaborador/home');
+            return res.redirect('/colaborador/dashboard');
         }
 
         // verifica conflitos de reserva para o local no período solicitado
@@ -96,7 +96,7 @@ exports.reservar = async (req, res) => {
 
         if (conflitos[0].c > 0) {
             req.session.mensagem = 'O local já está reservado no período selecionado.';
-            return res.redirect('/colaborador/home');
+            return res.redirect('/colaborador/dashboard');
         }
 
         // verifica a disponibilidade dos equipamentos
@@ -113,12 +113,12 @@ exports.reservar = async (req, res) => {
             );
             if (lrRows.length === 0) {
                 req.session.mensagem = `Equipamento inválido (id ${eq.lrId}).`;
-                return res.redirect('/colaborador/home');
+                return res.redirect('/colaborador/dashboard');
             }
             const lr = lrRows[0];
             if (String(lr.local_id) !== String(local_id)) {
                 req.session.mensagem = `Equipamento (id ${eq.lrId}) não pertence ao local selecionado.`;
-                return res.redirect('/colaborador/home');
+                return res.redirect('/colaborador/dashboard');
             }
 
             // soma já reservada para este locais_recursos_id em reservas conflitantes
@@ -136,7 +136,7 @@ exports.reservar = async (req, res) => {
             const available = lr.quantidade - reservedQty;
             if (eq.qty > available) {
                 req.session.mensagem = `Quantidade solicitada para "${lr.recurso_id}" excede a disponibilidade (disponível: ${available}).`;
-                return res.redirect('/colaborador/home');
+                return res.redirect('/colaborador/dashboard');
             }
         }
 

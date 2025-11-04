@@ -93,7 +93,7 @@ exports.login = async (req, res) => {
         } else if (rows[0].role === 'diretor') {
             return res.redirect('/diretor/dashboard');
         } else {
-            return res.redirect('/colaborador/home');
+            return res.redirect('/colaborador/dashboard');
         }
     } catch (error) {
         console.error('Erro ao realizar login:', error);

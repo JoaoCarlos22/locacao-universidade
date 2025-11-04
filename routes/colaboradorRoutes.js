@@ -7,7 +7,7 @@ const { home, reservar, telaPerfil, atualizarPerfil } = require('../services/col
 
 router.use(auth, isColaborador);
 
-router.get('/home', home); // retorna todas as reservas do usuário e formulário de reserva
+router.get('/dashboard', home); // retorna todas as reservas do usuário e formulário de reserva
 router.post('/reservar', reservar);
 
 router.get('/perfil', telaPerfil);
