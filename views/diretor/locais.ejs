@@ -1,0 +1,181 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid mt-4">
+  <div class="row">
+    <div class="col-md-3">
+      <%- include('../partials/sidebar', { active: 'local', basePath: '/diretor' }) %>
+    </div>
+
+    <div class="col-md-9">
+      <% if (typeof mensagem !== 'undefined' && mensagem) { %>
+        <div class="alert alert-info"><%= mensagem %></div>
+      <% } %>
+
+      <div class="row g-3">
+        <!-- Formulário de cadastro/edição de local -->
+        <div class="col-lg-5">
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title mb-3">Cadastrar Local</h5>
+              <form id="formLocal" action="/diretor/local" method="POST">
+                <div class="mb-3">
+                  <label for="nome" class="form-label">Nome</label>
+                  <input id="nome" name="nome" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                  <label for="tipo" class="form-label">Tipo</label>
+                  <select id="tipo" name="tipo" class="form-select" required>
+                    <option value="">Selecione</option>
+                    <option value="laboratorio">Laboratório</option>
+                    <option value="sala_de_aula">Sala de Aula</option>
+                    <option value="auditorio">Auditório</option>
+                  </select>
+                </div>
+
+                <div class="mb-3">
+                  <label for="bloco" class="form-label">Bloco / Prédio</label>
+                  <input id="bloco" name="bloco" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                  <label for="numero" class="form-label">Número</label>
+                  <input id="numero" name="numero" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                  <label for="observacoes" class="form-label">Observações</label>
+                  <textarea id="observacoes" name="observacoes" class="form-control" rows="3"></textarea>
+                </div>
+
+                <hr>
+
+                <h6 class="mb-2">Recursos do Local</h6>
+                <div id="recursosList" class="mb-3">
+                  <% if (Array.isArray(recursos) && recursos.length) { %>
+                    <% recursos.forEach(function(r) { %>
+                      <div class="d-flex align-items-center mb-2">
+                        <div class="form-check me-3">
+                          <input class="form-check-input recurso-checkbox" type="checkbox" value="<%= r.id %>" id="recurso-<%= r.id %>">
+                        </div>
+                        <label class="form-label mb-0 flex-grow-1" for="recurso-<%= r.id %>"><%= r.nome %></label>
+                        <input type="number" class="form-control form-control-sm ms-3 recurso-qty" data-recurso-id="<%= r.id %>" min="1" value="1" style="width:110px;" disabled>
+                      </div>
+                    <% }); %>
+                  <% } else { %>
+                    <div class="form-text">Nenhum recurso cadastrado. Cadastre recursos primeiro.</div>
+                  <% } %>
+                </div>
+
+                <div class="d-grid">
+                  <button type="submit" class="btn btn-primary">Cadastrar Local</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lista de locais existentes -->
+        <div class="col-lg-7">
+          <div class="card mb-3">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Locais Cadastrados</h5>
+                <small class="text-muted"><%= locais && locais.length ? (locais.length + ' registros') : 'Nenhum local' %></small>
+              </div>
+
+              <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>ID</th>
+                      <th>Nome</th>
+                      <th>Tipo</th>
+                      <th>Bloco</th>
+                      <th>Número</th>
+                      <th>Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% if (locais && locais.length) { %>
+                      <% locais.forEach(function(l) { %>
+                        <tr>
+                          <td><%= l.id %></td>
+                          <td><%= l.nome %></td>
+                          <td><%= l.tipo %></td>
+                          <td><%= l.bloco %></td>
+                          <td><%= l.numero %></td>
+                          <td>
+                            <div class="d-inline-flex gap-2">
+                              <!-- apenas visual; edição avançada pode ser implementada depois -->
+                              <a href="/diretor/local/<%= l.id %>/editar" class="btn btn-sm btn-outline-secondary">Editar</a>
+                              <form action="/diretor/local/<%= l.id %>" method="POST" onsubmit="return confirm('Deletar local?')">
+                                <input type="hidden" name="_action" value="delete">
+                                <button class="btn btn-sm btn-outline-danger">Deletar</button>
+                              </form>
+                            </div>
+                          </td>
+                        </tr>
+                      <% }); %>
+                    <% } else { %>
+                      <tr>
+                        <td colspan="6" class="text-center py-4">Nenhum local cadastrado.</td>
+                      </tr>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
+
+<script>
+  // transforma seleção de recursos + quantidades em inputs nomeados compatíveis com controller
+  document.getElementById('formLocal').addEventListener('submit', function (e) {
+    // remover inputs gerados anteriormente (se houver)
+    const existing = this.querySelectorAll('input[name^="equipamentos"]');
+    existing.forEach(i => i.remove());
+
+    const checkboxes = Array.from(document.querySelectorAll('.recurso-checkbox'));
+    const selected = checkboxes.filter(cb => cb.checked);
+    let idx = 0;
+    selected.forEach(cb => {
+      const recursoId = cb.value;
+      const qtyEl = document.querySelector('.recurso-qty[data-recurso-id="' + recursoId + '"]');
+      const quantidade = qtyEl ? Math.max(1, Number(qtyEl.value) || 1) : 1;
+
+      // criar inputs com nomes: equipamentos[0][id], equipamentos[0][quantidade]
+      const inputId = document.createElement('input');
+      inputId.type = 'hidden';
+      inputId.name = `equipamentos[${idx}][id]`;
+      inputId.value = recursoId;
+
+      const inputQty = document.createElement('input');
+      inputQty.type = 'hidden';
+      inputQty.name = `equipamentos[${idx}][quantidade]`;
+      inputQty.value = quantidade;
+
+      this.appendChild(inputId);
+      this.appendChild(inputQty);
+      idx++;
+    });
+    // submit prossegue normalmente
+  });
+
+  // habilita/ desabilita input quantidade quando checkbox trocado
+  document.querySelectorAll('.recurso-checkbox').forEach(cb => {
+    cb.addEventListener('change', (e) => {
+      const id = e.target.value;
+      const qty = document.querySelector('.recurso-qty[data-recurso-id="' + id + '"]');
+      if (qty) qty.disabled = !e.target.checked;
+    });
+  });
+</script>
