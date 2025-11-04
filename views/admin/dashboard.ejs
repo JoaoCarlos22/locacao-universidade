@@ -1,0 +1,120 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid mt-4">
+  <div class="row">
+    <div class="col-md-3">
+      <%- include('../partials/sidebar', { active: 'reservas', basePath: '/admin' }) %>
+    </div>
+
+    <div class="col-md-8">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Painel de Reservas</h3>
+        <small class="text-muted">Administradores podem visualizar e gerenciar reservas</small>
+      </div>
+
+      <form class="card mb-3" method="GET" action="/admin/dashboard">
+        <div class="card-body">
+          <div class="row g-2">
+            <div class="col-md-3">
+              <label class="form-label small">Status</label>
+              <select name="status" class="form-select">
+                <option value="">Todos</option>
+                <option value="pendente" <%= (filters && filters.status === 'pendente') ? 'selected' : '' %>>Pendente</option>
+                <option value="aprovado" <%= (filters && filters.status === 'aprovado') ? 'selected' : '' %>>Aprovado</option>
+                <option value="enviado a diretoria" <%= (filters && filters.status === 'enviado a diretoria') ? 'selected' : '' %>>Enviado à Diretoria</option>
+                <option value="rejeitado" <%= (filters && filters.status === 'rejeitado') ? 'selected' : '' %>>Rejeitado</option>
+              </select>
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label small">Data Início</label>
+              <input type="date" name="from" class="form-control" value="<%= (filters && filters.from) ? filters.from : '' %>">
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label small">Data Fim</label>
+              <input type="date" name="to" class="form-control" value="<%= (filters && filters.to) ? filters.to : '' %>">
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label small">Local / Busca</label>
+              <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="Local, solicitante ou ID" value="<%= (filters && filters.q) ? filters.q : '' %>">
+                <button class="btn btn-outline-secondary" type="submit">Filtrar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div class="card">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>ID</th>
+                  <th>Solicitante</th>
+                  <th>Local</th>
+                  <th>Início</th>
+                  <th>Fim</th>
+                  <th>Motivo</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (reservas && reservas.length) { %>
+                  <% reservas.forEach(function(r) { %>
+                    <tr>
+                      <td><%= r.id %></td>
+                      <td><%= r.solicitante_nome || '—' %></td>
+                      <td><%= r.local_nome || '—' %></td>
+                      <td><%= r.inicio_per ? new Date(r.inicio_per).toLocaleString() : '—' %></td>
+                      <td><%= r.fim_per ? new Date(r.fim_per).toLocaleString() : '—' %></td>
+                      <td class="text-truncate" style="max-width:200px"><%= r.motivo || '' %></td>
+                      <td>
+                        <% if (r.status === 'pendente') { %>
+                          <span class="badge bg-warning text-dark">Pendente</span>
+                        <% } else if (r.status === 'enviado a diretoria') { %>
+                          <span class="badge bg-info text-dark">Enviado à Diretoria</span>
+                        <% } else if (r.status === 'aprovado') { %>
+                          <span class="badge bg-success">Aprovado</span>
+                        <% } else if (r.status === 'rejeitado') { %>
+                          <span class="badge bg-danger">Rejeitado</span>
+                        <% } else { %>
+                          <span class="badge bg-secondary"><%= r.status %></span>
+                        <% } %>
+                      </td>
+                      <td>
+                        <div class="d-inline-flex gap-2">
+                          <% if (r.status === 'pendente') { %>
+                            <form action="/admin/enviar-reserva/<%= r.id %>" method="POST" onsubmit="return confirm('Enviar esta reserva para a diretoria?')">
+                              <button class="btn btn-sm btn-outline-primary" type="submit">Enviar → Diretor</button>
+                            </form>
+                            <form action="/admin/reprovar-reserva/<%= r.id %>" method="POST" onsubmit="return confirm('Reprovar esta reserva?')">
+                              <button class="btn btn-sm btn-outline-danger" type="submit">Reprovar</button>
+                            </form>
+                          <% } else { %>
+                            <a href="/admin/reserva/<%= r.id %>" class="btn btn-sm btn-outline-secondary">Ver</a>
+                          <% } %>
+                        </div>
+                      </td>
+                    </tr>
+                  <% }); %>
+                <% } else { %>
+                  <tr>
+                    <td colspan="8" class="text-center py-4">Nenhuma reserva encontrada com os critérios informados.</td>
+                  </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
