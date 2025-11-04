@@ -1,12 +1,16 @@
 const express = require('express');
 const router = express.Router();
 
-router.use(auth, colaboradorRole);
+const { isColaborador } = require('../middlewares/roleMiddleware');
+const { auth } = require('../middlewares/authMiddleware');
+const { home, reservar } = require('../services/colaboradorServices');
 
-router.get('/reservar', telaReservar); // retorna todas as reservas do usuário e formulário de reserva
+router.use(auth, isColaborador);
+
+router.get('/home', home); // retorna todas as reservas do usuário e formulário de reserva
 router.post('/reservar', reservar);
 
-router.get('/perfil', telaPerfil); // retorna dados do perfil do colaborador
-router.post('/perfil', atualizarPerfil);
+/* router.get('/perfil', telaPerfil); // retorna dados do perfil do colaborador
+router.post('/perfil', atualizarPerfil); */
 
 module.exports = router;

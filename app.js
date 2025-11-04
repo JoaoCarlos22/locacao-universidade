@@ -25,9 +25,9 @@ app.use(expressLayouts);
 app.set('layout', './layouts/main');
 app.use(express.static('public'));
 app.use('/', authRoutes);
-/* app.use('/reservas', reservasRoutes);
 app.use('/colaborador', colaboradorRoutes);
 app.use('/admin', adminRoutes);
+/* app.use('/reservas', reservasRoutes);
 app.use('/diretor', diretorRoutes); */
 
 app.listen(PORT, () => {
