@@ -1,4 +1,5 @@
 const pool = require('../db/connection');
+const bcrypt = require('bcrypt');
 
 exports.home = async (req, res) => {
     try {
@@ -165,6 +166,66 @@ exports.reservar = async (req, res) => {
         res.status(500).render('paginaErro', {
             title: 'Erro ao Criar Reserva',
             message: 'Erro ao criar a reserva. Por favor, tente novamente mais tarde.',
+            erro: error,
+            status: 500,
+            theme: 'erro'
+        });
+    }
+}
+
+exports.telaPerfil = async (req, res) => {
+    try {
+        const colaboradorId = req.session.usuario.id;
+        const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [colaboradorId]);
+        const colaborador = rows[0];
+        if (req.session.mensagem) {
+            const mensagem = req.session.mensagem;
+            req.session.mensagem = null;
+            return res.render('colaborador/perfil', {
+                title: 'Meu Perfil',
+                colaborador,
+                theme: 'colaborador',
+                mensagem
+            });
+        }
+        return res.render('colaborador/perfil', {
+            title: 'Meu Perfil',
+            colaborador,
+            theme: 'colaborador'
+        });
+    } catch (error) {
+        console.error("Erro ao renderizar a tela de perfil do Colaborador!", error);
+        res.status(500).render('paginaErro', {
+            title: 'Erro ao Carregar Perfil',
+            message: 'Erro ao carregar o perfil. Por favor, tente novamente mais tarde.',
+            erro: error,
+            status: 500,
+            theme: 'erro'
+        });
+    }
+}
+
+exports.atualizarPerfil = async (req, res) => {
+    try {
+        const colaboradorId = req.params.id;
+        const { nome, email, senha } = req.body;
+
+        if (!nome || !email || !senha) {
+            req.session.mensagem = 'Por favor, preencha todos os campos obrigatórios.';
+            return res.redirect(`/colaborador/perfil`);
+        }
+
+        const hashPassword = await bcrypt.hash(senha, 10);
+
+        // atualiza o perfil
+        await pool.query('UPDATE users SET nome = ?, email = ?, password_hash = ? WHERE id = ?', [nome, email, hashPassword, colaboradorId]);
+        req.session.mensagem = 'Perfil atualizado com sucesso!';
+        res.redirect('/colaborador/perfil');
+    } catch (error) {
+        console.error('Erro ao atualizar perfil:', error);
+        res.status(500).render('paginaErro', {
+            title: 'Erro ao Atualizar Perfil',
+            message: 'Erro ao atualizar o perfil. Por favor, tente novamente mais tarde.',
             erro: error,
             status: 500,
             theme: 'erro'
