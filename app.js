@@ -27,8 +27,8 @@ app.use(express.static('public'));
 app.use('/', authRoutes);
 app.use('/colaborador', colaboradorRoutes);
 app.use('/admin', adminRoutes);
-/* app.use('/reservas', reservasRoutes);
-app.use('/diretor', diretorRoutes); */
+app.use('/diretor', diretorRoutes); 
+/* app.use('/reservas', reservasRoutes); */
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}/login`);
