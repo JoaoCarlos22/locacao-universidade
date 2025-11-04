@@ -96,6 +96,8 @@
                           <td>
                             <% if (r.status === 'pendente') { %>
                               <span class="badge bg-warning text-dark">Pendente</span>
+                            <% } else if (r.status === 'enviado a diretoria') { %>
+                              <span class="badge bg-info text-dark">Enviado à Diretoria</span>
                             <% } else if (r.status === 'aprovado') { %>
                               <span class="badge bg-success">Aprovado</span>
                             <% } else if (r.status === 'rejeitado') { %>
