@@ -1,0 +1,91 @@
+<% const base = typeof basePath !== 'undefined' ? basePath : '/admin'; %>
+
+<style>
+  /* Sidebar compacto com hover/active */
+  .app-sidebar { max-width: 380px; }
+  .app-sidebar .list-group-item {
+    border: 0;
+    padding: .65rem .9rem;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    transition: background .12s ease, transform .08s ease;
+    color: #333;
+  }
+  .app-sidebar .list-group-item .icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 1.25rem;
+    color: inherit;
+  }
+  .app-sidebar .list-group-item:hover {
+    background: rgba(13,110,253,0.08); /* azul claro */
+    transform: translateX(4px);
+    color: #0d6efd;
+  }
+  /* logout specific styling (keep red even on hover) */
+  .app-sidebar .list-group-item.logout-item {
+    color: #dc3545;
+  }
+  .app-sidebar .list-group-item.logout-item .icon { color: inherit; }
+  .app-sidebar .list-group-item.logout-item:hover {
+    background: rgba(220,53,69,0.06);
+    transform: translateX(4px);
+    color: #dc3545;
+  }
+  .app-sidebar .list-group-item.active,
+  .app-sidebar .list-group-item.active:hover {
+    background: linear-gradient(90deg, rgba(13,110,253,0.12), rgba(13,110,253,0.06));
+    border-left: 4px solid #0d6efd;
+    color: #0d6efd;
+    font-weight: 600;
+  }
+  .app-sidebar .brand {
+    padding: .75rem .9rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+    font-weight:700;
+  }
+  .app-sidebar .brand .logo {
+    width:28px;
+    height:28px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:6px;
+    background:#0d6efd;
+    color:white;
+    font-size:0.9rem;
+  }
+</style>
+
+<div class="card app-sidebar">
+  <div class="brand">
+    <span class="logo">LU</span>
+    <span>Agendamento de Salas - Universidade</span>
+  </div>
+
+  <div class="card-body p-0">
+    <div class="list-group list-group-flush">
+      <a href="<%= base %>/dashboard" class="list-group-item list-group-item-action <%= active === 'reservas' ? 'active' : '' %>">
+        <span class="icon" aria-hidden="true"><i class="bi bi-calendar-check" style="font-size:1.05rem"></i></span>
+        <span>Reservas</span>
+      </a>
+
+      <a href="<%= base %>/perfil" class="list-group-item list-group-item-action <%= active === 'perfil' ? 'active' : '' %>">
+        <span class="icon" aria-hidden="true"><i class="bi bi-person" style="font-size:1.05rem"></i></span>
+        <span>Perfil</span>
+      </a>
+
+      <a href="/logout" class="list-group-item list-group-item-action logout-item">
+        <span class="icon" aria-hidden="true"><i class="bi bi-box-arrow-right" style="font-size:1.05rem"></i></span>
+        <span class="fw-medium">Logout</span>
+      </a>
+    </div>
+  </div>
+</div>
