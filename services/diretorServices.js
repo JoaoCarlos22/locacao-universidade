@@ -1,4 +1,5 @@
 const pool = require('../db/connection');
+const bcrypt = require('bcrypt');
 
 exports.telaDashboard = async (req, res) => {
     try {
@@ -222,6 +223,66 @@ exports.deletarLocal = async (req, res) => {
         res.status(500).render('paginaErro', {
             title: 'Erro ao Deletar Local',
             mensagem: 'Erro ao deletar o local. Por favor, tente novamente mais tarde.',
+            erro: error,
+            status: 500,
+            theme: 'erro'
+        });
+    }
+}
+
+exports.telaPerfil = async (req, res) => {
+    try {
+        const diretorId = req.session.usuario.id;
+        const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [diretorId]);
+        const diretor = rows[0];
+        if (req.session.mensagem) {
+            const mensagem = req.session.mensagem;
+            req.session.mensagem = null;
+            return res.render('diretor/perfil', {
+                title: 'Meu Perfil',
+                diretor,
+                theme: 'diretor',
+                mensagem
+            });
+        }
+        return res.render('diretor/perfil', {
+            title: 'Meu Perfil',
+            diretor,
+            theme: 'diretor'
+        });
+    } catch (error) {
+        console.error("Erro ao renderizar a tela de perfil do Diretor!", error);
+        res.status(500).render('paginaErro', {
+            title: 'Erro ao Carregar Perfil',
+            message: 'Erro ao carregar o perfil. Por favor, tente novamente mais tarde.',
+            erro: error,
+            status: 500,
+            theme: 'erro'
+        })
+    }
+}
+
+exports.atualizarPerfil = async (req, res) => {
+    try {
+        const diretorId = req.params.id;
+        const { nome, email, senha } = req.body;
+
+        if (!nome || !email || !senha) {
+            req.session.mensagem = 'Por favor, preencha todos os campos obrigatórios.';
+            return res.redirect(`/diretor/perfil`);
+        }
+
+        const hashPassword = await bcrypt.hash(senha, 10);
+
+        // atualiza o perfil
+        await pool.query('UPDATE users SET nome = ?, email = ?, password_hash = ? WHERE id = ?', [nome, email, hashPassword, diretorId]);
+        req.session.mensagem = 'Perfil atualizado com sucesso!';
+        res.redirect('/diretor/perfil');
+    } catch (error) {
+        console.error('Erro ao atualizar perfil:', error);
+        res.status(500).render('paginaErro', {
+            title: 'Erro ao Atualizar Perfil',
+            mensagem: 'Erro ao atualizar o perfil. Por favor, tente novamente mais tarde.',
             erro: error,
             status: 500,
             theme: 'erro'

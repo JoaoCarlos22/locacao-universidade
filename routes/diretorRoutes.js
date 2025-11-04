@@ -1,7 +1,7 @@
 const express = require('express');
 const { auth } = require('../middlewares/authMiddleware');
 const { isDiretor } = require('../middlewares/roleMiddleware');
-const { telaDashboard, aprovarReserva, reprovarReserva, telaCadastroLocal, cadastrarLocal, atualizarLocal, deletarLocal } = require('../services/diretorServices');
+const { telaDashboard, aprovarReserva, reprovarReserva, telaCadastroLocal, cadastrarLocal, atualizarLocal, deletarLocal, telaPerfil, atualizarPerfil } = require('../services/diretorServices');
 const router = express.Router();
 
 router.use(auth, isDiretor);
@@ -17,9 +17,8 @@ router.get('/local', telaCadastroLocal);
 router.post('/local', cadastrarLocal);
 router.post('/local/:id', atualizarLocal);
 router.post('/local/:id', deletarLocal);
-
-/* 
-router.get('/perfil', telaPerfil); // retorna dados do perfil do colaborador
-router.post('/perfil/:id', atualizarPerfil); */
+ 
+router.get('/perfil', telaPerfil);
+router.post('/perfil/:id', atualizarPerfil); 
 
 module.exports = router;
