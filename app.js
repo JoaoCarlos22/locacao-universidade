@@ -3,7 +3,6 @@ const session = require('express-session');
 const expressLayouts = require('express-ejs-layouts');
 const bodyParser = require('body-parser');
 const authRoutes = require('./routes/authRoutes');
-const reservasRoutes = require('./routes/reservasRoutes');
 const colaboradorRoutes = require('./routes/colaboradorRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const diretorRoutes = require('./routes/diretorRoutes');
@@ -28,7 +27,6 @@ app.use('/', authRoutes);
 app.use('/colaborador', colaboradorRoutes);
 app.use('/admin', adminRoutes);
 app.use('/diretor', diretorRoutes); 
-/* app.use('/reservas', reservasRoutes); */
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}/login`);
