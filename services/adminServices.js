@@ -54,13 +54,15 @@ exports.telaDashboard = async (req, res) => {
                 title: 'Dashboard Administrativo',
                 reservas: rows,
                 filters,
-                mensagem
+                mensagem,
+                theme: 'admin'
             });
         }
         return res.render('admin/dashboard', {
             title: 'Dashboard Administrativo',
             reservas: rows,
-            filters
+            filters,
+            theme: 'admin'
         });
     } catch (error) {
         console.error('Erro ao buscar reservas:', error);
@@ -68,7 +70,8 @@ exports.telaDashboard = async (req, res) => {
             title: 'Erro ao Carregar Dashboard',
             mensagem: 'Erro ao carregar o dashboard. Por favor, tente novamente mais tarde.',
             erro: error,
-            status: 500
+            status: 500,
+            theme: 'erro'
         })
     }
 }
@@ -86,7 +89,8 @@ exports.enviarReserva = async (req, res) => {
             title: 'Erro ao Enviar Reserva',
             mensagem: 'Erro ao enviar a reserva. Por favor, tente novamente mais tarde.',
             erro: error,
-            status: 500
+            status: 500,
+            theme: 'erro'
         });
     }
 }
@@ -105,7 +109,8 @@ exports.reprovarReserva = async (req, res) => {
             title: 'Erro ao Reprovar Reserva',
             mensagem: 'Erro ao reprovar a reserva. Por favor, tente novamente mais tarde.',
             erro: error,
-            status: 500
+            status: 500,
+            theme: 'erro'
         });
     }
 }

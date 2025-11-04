@@ -8,11 +8,13 @@ exports.telaLogin = async (req, res) => {
             req.session.mensagem = null;
             res.render('login', {
                 title: 'Login',
-                mensagem
+                mensagem,
+                theme: 'login'
             });
         } else {
             res.render('login', {
-                title: 'Login'
+                title: 'Login',
+                theme: 'login'
             });
         }
     } catch (error) {
@@ -21,7 +23,8 @@ exports.telaLogin = async (req, res) => {
             title: 'Erro ao Renderizar Login',
             message: 'Ocorreu um erro ao tentar carregar a página de login. Por favor, tente novamente mais tarde.',
             erro: error,
-            status: 500
+            status: 500,
+            theme: 'erro'
         })
     }
 }
@@ -33,11 +36,13 @@ exports.telaRegistro = async (req, res) => {
             req.session.mensagem = null;
             res.render('register', { 
                 title: 'Registro',
-                mensagem
+                mensagem,
+                theme: 'registro'
             });
         } else {
             res.render('register', {
-                title: 'Registro'
+                title: 'Registro',
+                theme: 'registro'
             });
         }
     } catch (error) {
@@ -46,7 +51,8 @@ exports.telaRegistro = async (req, res) => {
             title: 'Erro ao Renderizar Registro',
             message: 'Ocorreu um erro ao tentar carregar a página de registro. Por favor, tente novamente mais tarde.',
             erro: error,
-            status: 500
+            status: 500,
+            theme: 'erro'
         });
     }
 }
@@ -95,7 +101,8 @@ exports.login = async (req, res) => {
             title: 'Erro ao Realizar Login',
             message: 'Ocorreu um erro ao tentar realizar o login. Por favor, tente novamente mais tarde.',
             erro: error,
-            status: 500
+            status: 500,
+            theme: 'erro'
         });
     }
 }
@@ -135,7 +142,8 @@ exports.register = async (req, res) => {
             title: 'Erro ao Realizar Registro',
             message: 'Ocorreu um erro ao tentar realizar o registro. Por favor, tente novamente mais tarde.',
             erro: error,
-            status: 500
+            status: 500,
+            theme: 'erro'
         });
     }
 }
@@ -148,8 +156,9 @@ exports.logout = async (req, res) => {
                 return res.status(500).render('paginaErro', {
                     title: 'Erro ao Realizar Logout',
                     message: 'Ocorreu um erro ao tentar realizar o logout. Por favor, tente novamente mais tarde.',
-                    erro: error,
-                    status: 500
+                    erro: err,
+                    status: 500,
+                    theme: 'erro'
                 });
             }
             res.redirect('/login');
@@ -160,7 +169,8 @@ exports.logout = async (req, res) => {
             title: 'Erro ao Realizar Logout',
             message: 'Ocorreu um erro ao tentar realizar o logout. Por favor, tente novamente mais tarde.',
             erro: error,
-            status: 500
+            status: 500,
+            theme: 'erro'
         });
     }
 }

@@ -31,7 +31,8 @@ exports.home = async (req, res) => {
                 locais,
                 recursos,
                 locaisRecursos,
-                mensagem
+                mensagem,
+                theme: 'colaborador'
             });
         } else {
             return res.render('colaborador/home', {
@@ -39,7 +40,8 @@ exports.home = async (req, res) => {
                 reservas,
                 locais,
                 recursos,
-                locaisRecursos
+                locaisRecursos,
+                theme: 'colaborador'
             });
         }
     } catch (error) {
@@ -48,7 +50,8 @@ exports.home = async (req, res) => {
             title: 'Erro ao Carregar Página',
             message: 'Erro ao carregar a página de reservas. Por favor, tente novamente mais tarde.',
             erro: error,
-            status: 500
+            status: 500,
+            theme: 'erro'
         })
     }
 }
@@ -163,7 +166,8 @@ exports.reservar = async (req, res) => {
             title: 'Erro ao Criar Reserva',
             message: 'Erro ao criar a reserva. Por favor, tente novamente mais tarde.',
             erro: error,
-            status: 500
+            status: 500,
+            theme: 'erro'
         });
     }
 }
