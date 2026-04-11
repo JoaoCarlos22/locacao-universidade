@@ -34,7 +34,7 @@ Arquivo: `backend/appsettings.json`
 ```json
 {
 	"ConnectionStrings": {
-		"DefaultConnection": "server=localhost;port=3306;database=locacao_universitaria;user=root;password="
+		"ConnectionDatabase": "server=localhost;port=3306;database=locacao_universitaria;user=root;password="
 	},
 	"Jwt": {
 		"Key": "troque-esta-chave-para-uma-chave-forte-com-pelo-menos-32-caracteres",
@@ -43,6 +43,17 @@ Arquivo: `backend/appsettings.json`
 	}
 }
 ```
+
+## Rodando tudo com um comando (recomendado)
+
+Na raiz do projeto:
+
+```sh
+npm install
+npm run dev
+```
+
+Esse comando sobe o backend e o frontend em paralelo.
 
 ## Rodando o Backend
 
@@ -56,6 +67,7 @@ API disponível em:
 
 - `http://localhost:5000` (ou porta configurada pelo ASP.NET)
 - Endpoints principais sob `/api/*`
+- Health check do banco em `GET /health/db`
 
 ## Rodando o Frontend
 
@@ -70,8 +82,14 @@ npm run dev
 
 App em `http://localhost:5173`.
 
+Comportamento novo de disponibilidade:
+
+- Se a API estiver fora do ar (sem resposta, `502`, `503` ou `504`), o frontend redireciona automaticamente para `/servidor-indisponivel`.
+- A página `/servidor-indisponivel` permite tentar voltar para a tela anterior.
+
 ## Endpoints principais
 
+- `GET /health/db`
 - `POST /api/auth/login`
 - `POST /api/auth/register`
 - `GET /api/profile`
