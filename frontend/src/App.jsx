@@ -8,6 +8,7 @@ import AdminDashboardPage from './pages/AdminDashboardPage'
 import DiretorDashboardPage from './pages/DiretorDashboardPage'
 import DiretorLocaisPage from './pages/DiretorLocaisPage'
 import ProfilePage from './pages/ProfilePage'
+import ServerOfflinePage from './pages/ServerOfflinePage'
 import ShellLayout from './components/ShellLayout'
 
 function ProtectedRoute({ children, roles }) {
@@ -29,6 +30,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/servidor-indisponivel" element={<ServerOfflinePage />} />
 
       <Route
         path="/"

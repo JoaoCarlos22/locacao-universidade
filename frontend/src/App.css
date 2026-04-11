@@ -51,6 +51,25 @@
   padding: 24px;
 }
 
+.server-offline-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.server-offline-card {
+  width: min(560px, 100%);
+  display: grid;
+  gap: 14px;
+  text-align: center;
+}
+
+.server-offline-card p {
+  color: var(--ink-soft);
+  margin: 0;
+}
+
 .card {
   background: var(--surface);
   border-radius: var(--radius);
