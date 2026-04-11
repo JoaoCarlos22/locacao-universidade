@@ -13,12 +13,13 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-        ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+    var connectionString = builder.Configuration.GetConnectionString("ConnectionDatabase")
+        ?? throw new InvalidOperationException("Connection string 'ConnectionDatabase' not found.");
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
 builder.Services.AddScoped<JwtTokenService>();
+builder.Services.AddScoped<DatabaseHealthService>();
 
 var jwtKey = builder.Configuration["Jwt:Key"]
     ?? throw new InvalidOperationException("Jwt:Key not configured.");
@@ -57,6 +58,23 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var databaseHealthService = scope.ServiceProvider.GetRequiredService<DatabaseHealthService>();
+    try
+    {
+        var (canConnect, errorMessage) = await databaseHealthService.CheckConnectionAsync();
+        if (!canConnect)
+        {
+            app.Logger.LogError("Database connection check failed: {ErrorMessage}", errorMessage);
+        }
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogError(ex, "Database connection check failed during application startup.");
+    }
 }
 
 app.UseHttpsRedirection();
