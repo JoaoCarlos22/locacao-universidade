@@ -1,0 +1,42 @@
+:root {
+  --bg-1: #f3f8ff;
+  --bg-2: #e8f3e7;
+  --ink: #152320;
+  --ink-soft: #48605b;
+  --surface: #ffffff;
+  --line: #c8d9d2;
+  --accent: #0d8f6f;
+  --accent-hover: #0a745a;
+  --danger: #be3a34;
+  --ok: #1a7f4f;
+  --radius: 14px;
+  --shadow: 0 12px 38px rgba(33, 65, 57, 0.12);
+  --font-main: 'Trebuchet MS', 'Segoe UI', sans-serif;
+  --font-title: 'Georgia', serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-main);
+  color: var(--ink);
+  background: radial-gradient(circle at top left, var(--bg-1), var(--bg-2));
+}
+
+h1,
+h2 {
+  margin: 0;
+  font-family: var(--font-title);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+#root {
+  min-height: 100vh;
+}
