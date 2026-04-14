@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 using Backend.Data;
 using Backend.DTOs;
 using Microsoft.AspNetCore.Authorization;
@@ -12,19 +13,23 @@ namespace Backend.Controllers;
 [Route("api/[controller]")]
 public class ProfileController(AppDbContext db) : ControllerBase
 {
+    private int? GetAuthenticatedUserId()
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier)
+            ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub)
+            ?? User.FindFirstValue("sub")
+            ?? User.FindFirstValue(ClaimTypes.Name);
+
+        return int.TryParse(userIdClaim, out var userId) ? userId : null;
+    }
+
     [HttpGet]
     public async Task<ActionResult> Get()
     {
-        if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue(ClaimTypes.Name), out var userId))
+        var userId = GetAuthenticatedUserId();
+        if (userId is null)
         {
-            if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out userId))
-            {
-                var sub = User.FindFirstValue("sub");
-                if (!int.TryParse(sub, out userId))
-                {
-                    return Unauthorized();
-                }
-            }
+            return Unauthorized();
         }
 
         var user = await db.Users.FirstOrDefaultAsync(u => u.Id == userId);
@@ -45,8 +50,8 @@ public class ProfileController(AppDbContext db) : ControllerBase
     [HttpPut]
     public async Task<ActionResult> Update([FromBody] ProfileUpdateRequest request)
     {
-        var sub = User.FindFirstValue("sub");
-        if (!int.TryParse(sub, out var userId))
+        var userId = GetAuthenticatedUserId();
+        if (userId is null)
         {
             return Unauthorized();
         }

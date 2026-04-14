@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 using Backend.Data;
 using Backend.DTOs;
 using Backend.Models;
@@ -13,11 +14,21 @@ namespace Backend.Controllers;
 [Route("api/colaborador")]
 public class ColaboradorController(AppDbContext db) : ControllerBase
 {
+    private int? GetAuthenticatedUserId()
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier)
+            ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub)
+            ?? User.FindFirstValue("sub")
+            ?? User.FindFirstValue(ClaimTypes.Name);
+
+        return int.TryParse(userIdClaim, out var userId) ? userId : null;
+    }
+
     [HttpGet("dashboard")]
     public async Task<ActionResult> Dashboard()
     {
-        var sub = User.FindFirstValue("sub");
-        if (!int.TryParse(sub, out var colaboradorId))
+        var colaboradorId = GetAuthenticatedUserId();
+        if (colaboradorId is null)
         {
             return Unauthorized();
         }
@@ -57,8 +68,8 @@ public class ColaboradorController(AppDbContext db) : ControllerBase
     [HttpPost("reservas")]
     public async Task<ActionResult> Reservar([FromBody] ReservaCreateRequest request)
     {
-        var sub = User.FindFirstValue("sub");
-        if (!int.TryParse(sub, out var colaboradorId))
+        var colaboradorId = GetAuthenticatedUserId();
+        if (colaboradorId is null)
         {
             return Unauthorized();
         }
@@ -128,7 +139,7 @@ public class ColaboradorController(AppDbContext db) : ControllerBase
         var reserva = new Reserva
         {
             LocalId = request.LocalId,
-            SolicitanteId = colaboradorId,
+            SolicitanteId = colaboradorId.Value,
             Motivo = request.Motivo,
             InicioPer = request.InicioPer,
             FimPer = request.FimPer,
