@@ -13,10 +13,10 @@ export default function ConfirmModal({ open, title, description, confirmLabel, o
         <h3 id="modal-title">{title}</h3>
         <p>{description}</p>
         <div className="modal-actions">
-          <button type="button" className="btn-ghost" onClick={onCancel}>
+          <button type="button" className="btn btn-outline-secondary" onClick={onCancel}>
             Cancelar
           </button>
-          <button type="button" className={danger ? 'btn-danger' : ''} onClick={onConfirm}>
+          <button type="button" className={danger ? 'btn btn-danger' : 'btn btn-primary'} onClick={onConfirm}>
             {confirmLabel}
           </button>
         </div>

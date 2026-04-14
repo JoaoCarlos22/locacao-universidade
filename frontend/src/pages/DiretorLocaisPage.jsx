@@ -155,14 +155,16 @@ function DiretorLocaisPage() {
             ))}
           </div>
 
-          <button type="submit">Cadastrar local</button>
+          <button type="submit" className="btn btn-primary">
+            Cadastrar Local
+          </button>
         </form>
       </section>
 
       <section className="card table-card">
         <h2>Locais cadastrados</h2>
         <div className="table-wrap">
-          <table>
+          <table className="table table-hover table-sm mb-0">
             <thead>
               <tr>
                 <th>Nome</th>
@@ -184,7 +186,7 @@ function DiretorLocaisPage() {
                   <td>{local.numero}</td>
                   <td>
                     <div className="table-actions">
-                      <button type="button" className="btn-danger" onClick={() => setLocalToDelete(local)}>
+                      <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => setLocalToDelete(local)}>
                         Deletar
                       </button>
                     </div>

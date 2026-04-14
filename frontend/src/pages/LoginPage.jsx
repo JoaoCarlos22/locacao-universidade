@@ -20,7 +20,7 @@ function LoginPage() {
 
   return (
     <div className="auth-page">
-      <form className="card" onSubmit={handleSubmit}>
+      <form className="card shadow-sm auth-form" onSubmit={handleSubmit}>
         <h2>Acesso ao sistema</h2>
         <p className="auth-subtitle">Entre para acessar seu painel de reservas universitarias.</p>
         <label htmlFor="email">Email</label>
@@ -30,7 +30,9 @@ function LoginPage() {
         <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
 
         {error && <p className="error">{error}</p>}
-        <button type="submit">Entrar</button>
+        <button type="submit" className="btn btn-primary">
+          Entrar
+        </button>
         <Link className="auth-link" to="/register">
           Criar conta
         </Link>

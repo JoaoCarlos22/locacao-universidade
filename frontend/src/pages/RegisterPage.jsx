@@ -32,7 +32,7 @@ function RegisterPage() {
 
   return (
     <div className="auth-page">
-      <form className="card" onSubmit={handleSubmit}>
+      <form className="card shadow-sm auth-form" onSubmit={handleSubmit}>
         <h2>Criar nova conta</h2>
         <p className="auth-subtitle">Cadastre seu usuario para acessar o ambiente de locacao.</p>
 
@@ -63,7 +63,9 @@ function RegisterPage() {
 
         {error && <p className="error">{error}</p>}
         {success && <p className="success">{success}</p>}
-        <button type="submit">Registrar</button>
+        <button type="submit" className="btn btn-primary">
+          Registrar
+        </button>
         <Link className="auth-link" to="/login">
           Voltar para login
         </Link>

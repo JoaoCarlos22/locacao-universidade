@@ -6,12 +6,12 @@ export default function StatusBadge({ status }) {
   const normalized = normalizeStatus(status)
   const variant =
     normalized === 'aprovado'
-      ? 'status-approved'
+      ? 'text-bg-success'
       : normalized === 'reprovado' || normalized === 'rejeitado'
-        ? 'status-rejected'
+        ? 'text-bg-danger'
         : normalized === 'pendente'
-          ? 'status-pending'
-          : 'status-default'
+          ? 'text-bg-warning text-dark'
+          : 'text-bg-secondary'
 
-  return <span className={`status-badge ${variant}`}>{status || 'indefinido'}</span>
+  return <span className={`badge ${variant}`}>{status || 'indefinido'}</span>
 }

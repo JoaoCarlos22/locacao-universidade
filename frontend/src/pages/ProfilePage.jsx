@@ -42,7 +42,7 @@ function ProfilePage() {
         </div>
       </section>
 
-      <section className="card">
+      <section className="card shadow-sm">
         <form onSubmit={handleSubmit} className="grid-form">
           <label htmlFor="nome">Nome</label>
           <input id="nome" value={profile.nome} onChange={(e) => setProfile((p) => ({ ...p, nome: e.target.value }))} />
@@ -63,7 +63,9 @@ function ProfilePage() {
 
           {error && <p className="error">{error}</p>}
           {message && <p className="success">{message}</p>}
-          <button type="submit">Salvar alteracoes</button>
+          <button type="submit" className="btn btn-primary">
+            Salvar alteracoes
+          </button>
         </form>
       </section>
     </div>

@@ -151,14 +151,16 @@ function ColaboradorDashboardPage() {
               ))}
             </div>
           )}
-          <button type="submit">Reservar</button>
+          <button type="submit" className="btn btn-primary">
+            Solicitar Reserva
+          </button>
         </form>
       </section>
 
       <section className="card table-card">
         <h2>Minhas Reservas</h2>
         <div className="table-wrap">
-          <table>
+          <table className="table table-hover table-sm mb-0">
             <thead>
               <tr>
                 <th>ID</th>

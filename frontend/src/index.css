@@ -1,47 +1,9 @@
-:root {
-  --bg-1: #f3f6fc;
-  --bg-2: #e7eef8;
-  --ink: #1d2533;
-  --ink-soft: #5a667e;
-  --surface: #ffffff;
-  --surface-muted: #f7faff;
-  --line: #d8e2f0;
-  --accent: #1f6feb;
-  --accent-hover: #1857b8;
-  --accent-soft: #e8f1ff;
-  --danger: #c2353f;
-  --ok: #198754;
-  --warning: #d48806;
-  --radius: 16px;
-  --shadow: 0 20px 50px rgba(25, 51, 101, 0.14);
-  --font-main: 'Manrope', 'Segoe UI', sans-serif;
-  --font-title: 'Space Grotesk', 'Segoe UI', sans-serif;
-}
-
 * {
   box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  font-family: var(--font-main);
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 12% 15%, #ffffff 0, #eef4ff 35%, transparent 55%),
-    radial-gradient(circle at 88% 10%, #dce9ff 0, transparent 42%),
-    linear-gradient(160deg, var(--bg-1), var(--bg-2));
-}
-
-h1,
-h2,
-h3 {
-  margin: 0;
-  font-family: var(--font-title);
-}
-
-a {
-  color: var(--accent);
-  text-decoration: none;
+  background-color: #f8f9fa;
 }
 
 #root {

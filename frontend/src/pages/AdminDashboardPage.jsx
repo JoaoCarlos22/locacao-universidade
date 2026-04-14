@@ -98,7 +98,7 @@ function AdminDashboardPage() {
 
       <section className="card table-card">
         <div className="table-wrap">
-          <table>
+          <table className="table table-hover table-sm mb-0">
             <thead>
               <tr>
                 <th>ID</th>
@@ -120,10 +120,18 @@ function AdminDashboardPage() {
                   </td>
                   <td>
                     <div className="table-actions">
-                      <button type="button" onClick={() => setPendingAction({ id: reserva.id, type: 'encaminhar' })}>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-primary"
+                        onClick={() => setPendingAction({ id: reserva.id, type: 'encaminhar' })}
+                      >
                         Encaminhar
                       </button>
-                      <button type="button" className="btn-danger" onClick={() => setPendingAction({ id: reserva.id, type: 'reprovar' })}>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-danger"
+                        onClick={() => setPendingAction({ id: reserva.id, type: 'reprovar' })}
+                      >
                         Reprovar
                       </button>
                     </div>
