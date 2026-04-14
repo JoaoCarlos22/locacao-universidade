@@ -1,11 +1,16 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api/client'
+import ConfirmModal from '../components/ConfirmModal'
+import TableSkeleton from '../components/TableSkeleton'
+import ToastMessage from '../components/ToastMessage'
 
 function DiretorLocaisPage() {
   const [locais, setLocais] = useState([])
   const [recursos, setRecursos] = useState([])
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const [localToDelete, setLocalToDelete] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
   const [form, setForm] = useState({
     nome: '',
     tipo: 'sala_de_aula',
@@ -16,14 +21,29 @@ function DiretorLocaisPage() {
   })
 
   async function loadData() {
-    const { data } = await api.get('/diretor/locais')
-    setLocais(data.locais)
-    setRecursos(data.recursos)
+    setIsLoading(true)
+    try {
+      const { data } = await api.get('/diretor/locais')
+      setLocais(data.locais)
+      setRecursos(data.recursos)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   useEffect(() => {
     loadData().catch(() => setError('Falha ao carregar locais.'))
   }, [])
+
+  useEffect(() => {
+    if (!message && !error) return
+    const timeout = setTimeout(() => {
+      setMessage('')
+      setError('')
+    }, 4000)
+
+    return () => clearTimeout(timeout)
+  }, [message, error])
 
   async function handleCreate(event) {
     event.preventDefault()
@@ -63,8 +83,33 @@ function DiretorLocaisPage() {
     }
   }
 
+  const laboratorios = locais.filter((local) => local.tipo === 'laboratorio').length
+  const salas = locais.filter((local) => local.tipo === 'sala_de_aula').length
+
   return (
-    <div className="stack">
+    <div className="dashboard-grid">
+      <section className="page-header">
+        <div>
+          <h2>Gestao de Locais</h2>
+          <p>Cadastre ambientes e configure os recursos disponiveis.</p>
+        </div>
+      </section>
+
+      <section className="stats-grid">
+        <article className="stat-card">
+          <p className="stat-label">Total de locais</p>
+          <p className="stat-value">{locais.length}</p>
+        </article>
+        <article className="stat-card">
+          <p className="stat-label">Laboratorios</p>
+          <p className="stat-value">{laboratorios}</p>
+        </article>
+        <article className="stat-card">
+          <p className="stat-label">Salas de aula</p>
+          <p className="stat-value">{salas}</p>
+        </article>
+      </section>
+
       <section className="card">
         <h2>Novo Local</h2>
         <form className="grid-form" onSubmit={handleCreate}>
@@ -110,41 +155,65 @@ function DiretorLocaisPage() {
             ))}
           </div>
 
-          {error && <p className="error">{error}</p>}
-          {message && <p className="success">{message}</p>}
           <button type="submit">Cadastrar local</button>
         </form>
       </section>
 
-      <section className="card">
+      <section className="card table-card">
         <h2>Locais cadastrados</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Tipo</th>
-              <th>Bloco</th>
-              <th>Numero</th>
-              <th>Acoes</th>
-            </tr>
-          </thead>
-          <tbody>
-            {locais.map((local) => (
-              <tr key={local.id}>
-                <td>{local.nome}</td>
-                <td>{local.tipo}</td>
-                <td>{local.bloco}</td>
-                <td>{local.numero}</td>
-                <td>
-                  <button type="button" onClick={() => deleteLocal(local.id)}>
-                    Deletar
-                  </button>
-                </td>
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>Bloco</th>
+                <th>Numero</th>
+                <th>Acoes</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {isLoading && <TableSkeleton rows={6} columns={5} />}
+              {!isLoading && locais.map((local) => (
+                <tr key={local.id}>
+                  <td>{local.nome}</td>
+                  <td>
+                    <span className="status-badge status-default">{local.tipo}</span>
+                  </td>
+                  <td>{local.bloco}</td>
+                  <td>{local.numero}</td>
+                  <td>
+                    <div className="table-actions">
+                      <button type="button" className="btn-danger" onClick={() => setLocalToDelete(local)}>
+                        Deletar
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
+
+      <div className="toast-stack">
+        <ToastMessage type="error" text={error} onClose={() => setError('')} />
+        <ToastMessage type="success" text={message} onClose={() => setMessage('')} />
+      </div>
+
+      <ConfirmModal
+        open={Boolean(localToDelete)}
+        title="Confirmar exclusao"
+        description={`Deseja realmente deletar o local ${localToDelete?.nome || ''}?`}
+        confirmLabel="Deletar"
+        onCancel={() => setLocalToDelete(null)}
+        onConfirm={async () => {
+          if (!localToDelete) return
+          await deleteLocal(localToDelete.id)
+          setLocalToDelete(null)
+        }}
+        danger
+      />
     </div>
   )
 }

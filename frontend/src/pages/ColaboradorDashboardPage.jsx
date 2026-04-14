@@ -1,25 +1,46 @@
 import { useEffect, useMemo, useState } from 'react'
 import { api } from '../api/client'
+import StatusBadge from '../components/StatusBadge'
+import TableSkeleton from '../components/TableSkeleton'
+import ToastMessage from '../components/ToastMessage'
 
 function ColaboradorDashboardPage() {
   const [payload, setPayload] = useState({ reservas: [], locais: [], recursos: [], locaisRecursos: [] })
   const [form, setForm] = useState({ localId: '', motivo: '', inicioPer: '', fimPer: '', equipamentos: {} })
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
 
   async function loadDashboard() {
-    const { data } = await api.get('/colaborador/dashboard')
-    setPayload(data)
+    setIsLoading(true)
+    try {
+      const { data } = await api.get('/colaborador/dashboard')
+      setPayload(data)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   useEffect(() => {
     loadDashboard().catch(() => setError('Falha ao carregar dados do colaborador.'))
   }, [])
 
+  useEffect(() => {
+    if (!message && !error) return
+    const timeout = setTimeout(() => {
+      setMessage('')
+      setError('')
+    }, 4000)
+
+    return () => clearTimeout(timeout)
+  }, [message, error])
+
   const equipamentosDoLocal = useMemo(
     () => payload.locaisRecursos.filter((lr) => String(lr.localId) === String(form.localId)),
     [payload.locaisRecursos, form.localId],
   )
+
+  const reservasPendentes = payload.reservas.filter((reserva) => reserva.status === 'pendente').length
 
   function recursoName(recursoId) {
     return payload.recursos.find((r) => r.id === recursoId)?.nome || `Recurso ${recursoId}`
@@ -52,7 +73,29 @@ function ColaboradorDashboardPage() {
   }
 
   return (
-    <div className="stack">
+    <div className="dashboard-grid">
+      <section className="page-header">
+        <div>
+          <h2>Dashboard do Colaborador</h2>
+          <p>Solicite novos espacos e acompanhe o andamento das suas reservas.</p>
+        </div>
+      </section>
+
+      <section className="stats-grid">
+        <article className="stat-card">
+          <p className="stat-label">Minhas reservas</p>
+          <p className="stat-value">{payload.reservas.length}</p>
+        </article>
+        <article className="stat-card">
+          <p className="stat-label">Pendentes</p>
+          <p className="stat-value">{reservasPendentes}</p>
+        </article>
+        <article className="stat-card">
+          <p className="stat-label">Locais disponiveis</p>
+          <p className="stat-value">{payload.locais.length}</p>
+        </article>
+      </section>
+
       <section className="card">
         <h2>Nova Reserva</h2>
         <form className="grid-form" onSubmit={handleSubmit}>
@@ -108,38 +151,45 @@ function ColaboradorDashboardPage() {
               ))}
             </div>
           )}
-
-          {error && <p className="error">{error}</p>}
-          {message && <p className="success">{message}</p>}
           <button type="submit">Reservar</button>
         </form>
       </section>
 
-      <section className="card">
+      <section className="card table-card">
         <h2>Minhas Reservas</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Local</th>
-              <th>Inicio</th>
-              <th>Fim</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {payload.reservas.map((reserva) => (
-              <tr key={reserva.id}>
-                <td>{reserva.id}</td>
-                <td>{reserva.localNome || '-'}</td>
-                <td>{new Date(reserva.inicioPer).toLocaleString()}</td>
-                <td>{new Date(reserva.fimPer).toLocaleString()}</td>
-                <td>{reserva.status}</td>
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Local</th>
+                <th>Inicio</th>
+                <th>Fim</th>
+                <th>Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {isLoading && <TableSkeleton rows={6} columns={5} />}
+              {!isLoading && payload.reservas.map((reserva) => (
+                <tr key={reserva.id}>
+                  <td>{reserva.id}</td>
+                  <td>{reserva.localNome || '-'}</td>
+                  <td>{new Date(reserva.inicioPer).toLocaleString()}</td>
+                  <td>{new Date(reserva.fimPer).toLocaleString()}</td>
+                  <td>
+                    <StatusBadge status={reserva.status} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
+
+      <div className="toast-stack">
+        <ToastMessage type="error" text={error} onClose={() => setError('')} />
+        <ToastMessage type="success" text={message} onClose={() => setMessage('')} />
+      </div>
     </div>
   )
 }

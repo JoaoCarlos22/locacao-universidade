@@ -22,6 +22,7 @@ function LoginPage() {
     <div className="auth-page">
       <form className="card" onSubmit={handleSubmit}>
         <h2>Acesso ao sistema</h2>
+        <p className="auth-subtitle">Entre para acessar seu painel de reservas universitarias.</p>
         <label htmlFor="email">Email</label>
         <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
 
@@ -30,7 +31,9 @@ function LoginPage() {
 
         {error && <p className="error">{error}</p>}
         <button type="submit">Entrar</button>
-        <Link to="/register">Criar conta</Link>
+        <Link className="auth-link" to="/register">
+          Criar conta
+        </Link>
       </form>
     </div>
   )

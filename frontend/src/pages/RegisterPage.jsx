@@ -34,6 +34,7 @@ function RegisterPage() {
     <div className="auth-page">
       <form className="card" onSubmit={handleSubmit}>
         <h2>Criar nova conta</h2>
+        <p className="auth-subtitle">Cadastre seu usuario para acessar o ambiente de locacao.</p>
 
         <label htmlFor="nome">Nome</label>
         <input id="nome" value={form.nome} onChange={(e) => updateField('nome', e.target.value)} required />
@@ -63,7 +64,9 @@ function RegisterPage() {
         {error && <p className="error">{error}</p>}
         {success && <p className="success">{success}</p>}
         <button type="submit">Registrar</button>
-        <Link to="/login">Voltar para login</Link>
+        <Link className="auth-link" to="/login">
+          Voltar para login
+        </Link>
       </form>
     </div>
   )

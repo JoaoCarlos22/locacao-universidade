@@ -34,31 +34,39 @@ function ProfilePage() {
   }
 
   return (
-    <section className="card">
-      <h2>Meu Perfil</h2>
-      <form onSubmit={handleSubmit} className="grid-form">
-        <label htmlFor="nome">Nome</label>
-        <input id="nome" value={profile.nome} onChange={(e) => setProfile((p) => ({ ...p, nome: e.target.value }))} />
+    <div className="dashboard-grid">
+      <section className="page-header">
+        <div>
+          <h2>Meu Perfil</h2>
+          <p>Atualize seus dados e mantenha sua conta segura.</p>
+        </div>
+      </section>
 
-        <label htmlFor="email">Email</label>
-        <input
-          id="email"
-          type="email"
-          value={profile.email}
-          onChange={(e) => setProfile((p) => ({ ...p, email: e.target.value }))}
-        />
+      <section className="card">
+        <form onSubmit={handleSubmit} className="grid-form">
+          <label htmlFor="nome">Nome</label>
+          <input id="nome" value={profile.nome} onChange={(e) => setProfile((p) => ({ ...p, nome: e.target.value }))} />
 
-        <label htmlFor="role">Perfil</label>
-        <input id="role" value={profile.role} disabled />
+          <label htmlFor="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            value={profile.email}
+            onChange={(e) => setProfile((p) => ({ ...p, email: e.target.value }))}
+          />
 
-        <label htmlFor="senha">Nova senha (opcional)</label>
-        <input id="senha" type="password" value={senha} onChange={(e) => setSenha(e.target.value)} />
+          <label htmlFor="role">Perfil</label>
+          <input id="role" value={profile.role} disabled />
 
-        {error && <p className="error">{error}</p>}
-        {message && <p className="success">{message}</p>}
-        <button type="submit">Salvar</button>
-      </form>
-    </section>
+          <label htmlFor="senha">Nova senha (opcional)</label>
+          <input id="senha" type="password" value={senha} onChange={(e) => setSenha(e.target.value)} />
+
+          {error && <p className="error">{error}</p>}
+          {message && <p className="success">{message}</p>}
+          <button type="submit">Salvar alteracoes</button>
+        </form>
+      </section>
+    </div>
   )
 }
 
