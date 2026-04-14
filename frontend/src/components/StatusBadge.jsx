@@ -1,17 +1,23 @@
+import { Badge } from '@radix-ui/themes'
+
 function normalizeStatus(status) {
   return String(status || '').toLowerCase().trim()
 }
 
 export default function StatusBadge({ status }) {
   const normalized = normalizeStatus(status)
-  const variant =
+  const color =
     normalized === 'aprovado'
-      ? 'text-bg-success'
+      ? 'green'
       : normalized === 'reprovado' || normalized === 'rejeitado'
-        ? 'text-bg-danger'
+        ? 'red'
         : normalized === 'pendente'
-          ? 'text-bg-warning text-dark'
-          : 'text-bg-secondary'
+          ? 'amber'
+          : 'gray'
 
-  return <span className={`badge ${variant}`}>{status || 'indefinido'}</span>
+  return (
+    <Badge color={color} variant="soft" radius="full" size="2">
+      {status || 'indefinido'}
+    </Badge>
+  )
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { Button, Callout, Card, Flex, Heading, Text, TextField } from '@radix-ui/themes'
+import { useAuth } from '../context/useAuth'
 
 function LoginPage() {
   const { login } = useAuth()
@@ -20,23 +21,33 @@ function LoginPage() {
 
   return (
     <div className="auth-page">
-      <form className="card shadow-sm auth-form" onSubmit={handleSubmit}>
-        <h2>Acesso ao sistema</h2>
-        <p className="auth-subtitle">Entre para acessar seu painel de reservas universitarias.</p>
-        <label htmlFor="email">Email</label>
-        <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+      <Card className="auth-card">
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <Heading as="h2" size="6">
+            Acesso ao sistema
+          </Heading>
+          <Text as="p" color="gray" className="auth-subtitle">
+            Entre para acessar seu painel de reservas universitarias.
+          </Text>
 
-        <label htmlFor="password">Senha</label>
-        <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <label htmlFor="email">Email</label>
+          <TextField.Root id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
 
-        {error && <p className="error">{error}</p>}
-        <button type="submit" className="btn btn-primary">
-          Entrar
-        </button>
-        <Link className="auth-link" to="/register">
-          Criar conta
-        </Link>
-      </form>
+          <label htmlFor="password">Senha</label>
+          <TextField.Root id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+
+          {error && <Callout.Root color="red">{error}</Callout.Root>}
+
+          <Flex direction="column" gap="2" mt="2">
+            <Button type="submit" size="3">
+              Entrar
+            </Button>
+            <Link className="auth-link" to="/register">
+              Criar conta
+            </Link>
+          </Flex>
+        </form>
+      </Card>
     </div>
   )
 }

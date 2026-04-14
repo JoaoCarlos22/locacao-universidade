@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
+import { Badge, Button, Card, Heading, Select, Text, TextArea, TextField } from '@radix-ui/themes'
 import { api } from '../api/client'
 import ConfirmModal from '../components/ConfirmModal'
 import TableSkeleton from '../components/TableSkeleton'
-import ToastMessage from '../components/ToastMessage'
+import ToastStack from '../components/ToastStack'
 
 function DiretorLocaisPage() {
   const [locais, setLocais] = useState([])
@@ -90,8 +91,10 @@ function DiretorLocaisPage() {
     <div className="dashboard-grid">
       <section className="page-header">
         <div>
-          <h2>Gestao de Locais</h2>
-          <p>Cadastre ambientes e configure os recursos disponiveis.</p>
+          <Heading as="h2" size="6">
+            Gestao de Locais
+          </Heading>
+          <Text color="gray">Cadastre ambientes e configure os recursos disponiveis.</Text>
         </div>
       </section>
 
@@ -110,27 +113,32 @@ function DiretorLocaisPage() {
         </article>
       </section>
 
-      <section className="card">
-        <h2>Novo Local</h2>
+      <Card>
+        <Heading as="h2" size="5" mb="3">
+          Novo Local
+        </Heading>
         <form className="grid-form" onSubmit={handleCreate}>
           <label htmlFor="nome">Nome</label>
-          <input id="nome" value={form.nome} onChange={(e) => setForm((p) => ({ ...p, nome: e.target.value }))} required />
+          <TextField.Root id="nome" value={form.nome} onChange={(e) => setForm((p) => ({ ...p, nome: e.target.value }))} required />
 
           <label htmlFor="tipo">Tipo</label>
-          <select id="tipo" value={form.tipo} onChange={(e) => setForm((p) => ({ ...p, tipo: e.target.value }))}>
-            <option value="laboratorio">Laboratorio</option>
-            <option value="sala_de_aula">Sala de Aula</option>
-            <option value="auditorio">Auditorio</option>
-          </select>
+          <Select.Root value={form.tipo} onValueChange={(value) => setForm((p) => ({ ...p, tipo: value }))}>
+            <Select.Trigger id="tipo" />
+            <Select.Content>
+              <Select.Item value="laboratorio">Laboratorio</Select.Item>
+              <Select.Item value="sala_de_aula">Sala de Aula</Select.Item>
+              <Select.Item value="auditorio">Auditorio</Select.Item>
+            </Select.Content>
+          </Select.Root>
 
           <label htmlFor="bloco">Bloco</label>
-          <input id="bloco" value={form.bloco} onChange={(e) => setForm((p) => ({ ...p, bloco: e.target.value }))} required />
+          <TextField.Root id="bloco" value={form.bloco} onChange={(e) => setForm((p) => ({ ...p, bloco: e.target.value }))} required />
 
           <label htmlFor="numero">Numero</label>
-          <input id="numero" value={form.numero} onChange={(e) => setForm((p) => ({ ...p, numero: e.target.value }))} required />
+          <TextField.Root id="numero" value={form.numero} onChange={(e) => setForm((p) => ({ ...p, numero: e.target.value }))} required />
 
           <label htmlFor="observacoes">Observacoes</label>
-          <textarea
+          <TextArea
             id="observacoes"
             value={form.observacoes}
             onChange={(e) => setForm((p) => ({ ...p, observacoes: e.target.value }))}
@@ -140,7 +148,7 @@ function DiretorLocaisPage() {
             {recursos.map((recurso) => (
               <label key={recurso.id}>
                 {recurso.nome}
-                <input
+                <TextField.Root
                   type="number"
                   min="0"
                   value={form.equipamentos[recurso.id] || ''}
@@ -155,16 +163,18 @@ function DiretorLocaisPage() {
             ))}
           </div>
 
-          <button type="submit" className="btn btn-primary">
+          <Button type="submit" size="3">
             Cadastrar Local
-          </button>
+          </Button>
         </form>
-      </section>
+      </Card>
 
-      <section className="card table-card">
-        <h2>Locais cadastrados</h2>
+      <Card className="table-card">
+        <Heading as="h2" size="5" mb="3">
+          Locais cadastrados
+        </Heading>
         <div className="table-wrap">
-          <table className="table table-hover table-sm mb-0">
+          <table className="app-table">
             <thead>
               <tr>
                 <th>Nome</th>
@@ -180,15 +190,17 @@ function DiretorLocaisPage() {
                 <tr key={local.id}>
                   <td>{local.nome}</td>
                   <td>
-                    <span className="status-badge status-default">{local.tipo}</span>
+                    <Badge color="gray" variant="soft">
+                      {local.tipo}
+                    </Badge>
                   </td>
                   <td>{local.bloco}</td>
                   <td>{local.numero}</td>
                   <td>
                     <div className="table-actions">
-                      <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => setLocalToDelete(local)}>
+                      <Button type="button" variant="soft" color="red" onClick={() => setLocalToDelete(local)}>
                         Deletar
-                      </button>
+                      </Button>
                     </div>
                   </td>
                 </tr>
@@ -196,12 +208,9 @@ function DiretorLocaisPage() {
             </tbody>
           </table>
         </div>
-      </section>
+      </Card>
 
-      <div className="toast-stack">
-        <ToastMessage type="error" text={error} onClose={() => setError('')} />
-        <ToastMessage type="success" text={message} onClose={() => setMessage('')} />
-      </div>
+      <ToastStack error={error} message={message} onClearError={() => setError('')} onClearMessage={() => setMessage('')} />
 
       <ConfirmModal
         open={Boolean(localToDelete)}

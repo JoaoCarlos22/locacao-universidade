@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
+import { Button, Card, Heading, Text } from '@radix-ui/themes'
 import { api } from '../api/client'
 import ConfirmModal from '../components/ConfirmModal'
 import StatusBadge from '../components/StatusBadge'
 import TableSkeleton from '../components/TableSkeleton'
-import ToastMessage from '../components/ToastMessage'
+import ToastStack from '../components/ToastStack'
 
 function AdminDashboardPage() {
   const [reservas, setReservas] = useState([])
@@ -80,8 +81,10 @@ function AdminDashboardPage() {
     <div className="dashboard-grid">
       <section className="page-header">
         <div>
-          <h2>Dashboard Administrativo</h2>
-          <p>Gerencie reservas e encaminhe para a diretoria.</p>
+          <Heading as="h2" size="6">
+            Dashboard Administrativo
+          </Heading>
+          <Text color="gray">Gerencie reservas e encaminhe para a diretoria.</Text>
         </div>
       </section>
 
@@ -96,9 +99,9 @@ function AdminDashboardPage() {
         </article>
       </section>
 
-      <section className="card table-card">
+      <Card className="table-card">
         <div className="table-wrap">
-          <table className="table table-hover table-sm mb-0">
+          <table className="app-table">
             <thead>
               <tr>
                 <th>ID</th>
@@ -120,20 +123,21 @@ function AdminDashboardPage() {
                   </td>
                   <td>
                     <div className="table-actions">
-                      <button
+                      <Button
                         type="button"
-                        className="btn btn-sm btn-outline-primary"
+                        variant="soft"
                         onClick={() => setPendingAction({ id: reserva.id, type: 'encaminhar' })}
                       >
                         Encaminhar
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         type="button"
-                        className="btn btn-sm btn-outline-danger"
+                        variant="soft"
+                        color="red"
                         onClick={() => setPendingAction({ id: reserva.id, type: 'reprovar' })}
                       >
                         Reprovar
-                      </button>
+                      </Button>
                     </div>
                   </td>
                 </tr>
@@ -141,12 +145,9 @@ function AdminDashboardPage() {
             </tbody>
           </table>
         </div>
-      </section>
+      </Card>
 
-      <div className="toast-stack">
-        <ToastMessage type="error" text={error} onClose={() => setError('')} />
-        <ToastMessage type="success" text={message} onClose={() => setMessage('')} />
-      </div>
+      <ToastStack error={error} message={message} onClearError={() => setError('')} onClearMessage={() => setMessage('')} />
 
       <ConfirmModal
         open={Boolean(pendingAction)}

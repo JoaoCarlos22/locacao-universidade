@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
+import { Button, Card, Heading, Text } from '@radix-ui/themes'
 import { api } from '../api/client'
 import ConfirmModal from '../components/ConfirmModal'
 import StatusBadge from '../components/StatusBadge'
 import TableSkeleton from '../components/TableSkeleton'
-import ToastMessage from '../components/ToastMessage'
+import ToastStack from '../components/ToastStack'
 
 function DiretorDashboardPage() {
   const [reservas, setReservas] = useState([])
@@ -81,8 +82,10 @@ function DiretorDashboardPage() {
     <div className="dashboard-grid">
       <section className="page-header">
         <div>
-          <h2>Painel da Diretoria</h2>
-          <p>Aprove ou reprove reservas encaminhadas para decisao final.</p>
+          <Heading as="h2" size="6">
+            Painel da Diretoria
+          </Heading>
+          <Text color="gray">Aprove ou reprove reservas encaminhadas para decisao final.</Text>
         </div>
       </section>
 
@@ -101,9 +104,9 @@ function DiretorDashboardPage() {
         </article>
       </section>
 
-      <section className="card table-card">
+      <Card className="table-card">
         <div className="table-wrap">
-          <table className="table table-hover table-sm mb-0">
+          <table className="app-table">
             <thead>
               <tr>
                 <th>ID</th>
@@ -125,20 +128,21 @@ function DiretorDashboardPage() {
                   </td>
                   <td>
                     <div className="table-actions">
-                      <button
+                      <Button
                         type="button"
-                        className="btn btn-sm btn-outline-primary"
+                        variant="soft"
                         onClick={() => setPendingAction({ id: reserva.id, type: 'aprovar' })}
                       >
                         Aprovar
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         type="button"
-                        className="btn btn-sm btn-outline-danger"
+                        variant="soft"
+                        color="red"
                         onClick={() => setPendingAction({ id: reserva.id, type: 'reprovar' })}
                       >
                         Reprovar
-                      </button>
+                      </Button>
                     </div>
                   </td>
                 </tr>
@@ -146,12 +150,9 @@ function DiretorDashboardPage() {
             </tbody>
           </table>
         </div>
-      </section>
+      </Card>
 
-      <div className="toast-stack">
-        <ToastMessage type="error" text={error} onClose={() => setError('')} />
-        <ToastMessage type="success" text={message} onClose={() => setMessage('')} />
-      </div>
+      <ToastStack error={error} message={message} onClearError={() => setError('')} onClearMessage={() => setMessage('')} />
 
       <ConfirmModal
         open={Boolean(pendingAction)}

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { Button, Callout, Card, Flex, Heading, Select, Text, TextField } from '@radix-ui/themes'
+import { useAuth } from '../context/useAuth'
 
 function RegisterPage() {
   const { register } = useAuth()
@@ -32,44 +33,56 @@ function RegisterPage() {
 
   return (
     <div className="auth-page">
-      <form className="card shadow-sm auth-form" onSubmit={handleSubmit}>
-        <h2>Criar nova conta</h2>
-        <p className="auth-subtitle">Cadastre seu usuario para acessar o ambiente de locacao.</p>
+      <Card className="auth-card">
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <Heading as="h2" size="6">
+            Criar nova conta
+          </Heading>
+          <Text as="p" color="gray" className="auth-subtitle">
+            Cadastre seu usuario para acessar o ambiente de locacao.
+          </Text>
 
-        <label htmlFor="nome">Nome</label>
-        <input id="nome" value={form.nome} onChange={(e) => updateField('nome', e.target.value)} required />
+          <label htmlFor="nome">Nome</label>
+          <TextField.Root id="nome" value={form.nome} onChange={(e) => updateField('nome', e.target.value)} required />
 
-        <label htmlFor="email">Email</label>
-        <input id="email" type="email" value={form.email} onChange={(e) => updateField('email', e.target.value)} required />
+          <label htmlFor="email">Email</label>
+          <TextField.Root id="email" type="email" value={form.email} onChange={(e) => updateField('email', e.target.value)} required />
 
-        <label htmlFor="password">Senha</label>
-        <input id="password" type="password" value={form.password} onChange={(e) => updateField('password', e.target.value)} required />
+          <label htmlFor="password">Senha</label>
+          <TextField.Root id="password" type="password" value={form.password} onChange={(e) => updateField('password', e.target.value)} required />
 
-        <label htmlFor="confirmPassword">Confirmar senha</label>
-        <input
-          id="confirmPassword"
-          type="password"
-          value={form.confirmPassword}
-          onChange={(e) => updateField('confirmPassword', e.target.value)}
-          required
-        />
+          <label htmlFor="confirmPassword">Confirmar senha</label>
+          <TextField.Root
+            id="confirmPassword"
+            type="password"
+            value={form.confirmPassword}
+            onChange={(e) => updateField('confirmPassword', e.target.value)}
+            required
+          />
 
-        <label htmlFor="role">Perfil</label>
-        <select id="role" value={form.role} onChange={(e) => updateField('role', e.target.value)}>
-          <option value="colaborador">Colaborador</option>
-          <option value="admin">Admin</option>
-          <option value="diretor">Diretor</option>
-        </select>
+          <label htmlFor="role">Perfil</label>
+          <Select.Root value={form.role} onValueChange={(value) => updateField('role', value)}>
+            <Select.Trigger id="role" />
+            <Select.Content>
+              <Select.Item value="colaborador">Colaborador</Select.Item>
+              <Select.Item value="admin">Admin</Select.Item>
+              <Select.Item value="diretor">Diretor</Select.Item>
+            </Select.Content>
+          </Select.Root>
 
-        {error && <p className="error">{error}</p>}
-        {success && <p className="success">{success}</p>}
-        <button type="submit" className="btn btn-primary">
-          Registrar
-        </button>
-        <Link className="auth-link" to="/login">
-          Voltar para login
-        </Link>
-      </form>
+          {error && <Callout.Root color="red">{error}</Callout.Root>}
+          {success && <Callout.Root color="green">{success}</Callout.Root>}
+
+          <Flex direction="column" gap="2" mt="2">
+            <Button type="submit" size="3">
+              Registrar
+            </Button>
+            <Link className="auth-link" to="/login">
+              Voltar para login
+            </Link>
+          </Flex>
+        </form>
+      </Card>
     </div>
   )
 }

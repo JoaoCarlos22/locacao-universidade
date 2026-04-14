@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { Button, Card, Heading, Text } from '@radix-ui/themes'
 
 export default function ServerOfflinePage() {
   const navigate = useNavigate()
@@ -14,15 +15,17 @@ export default function ServerOfflinePage() {
 
   return (
     <main className="server-offline-page">
-      <section className="card shadow-sm server-offline-card">
-        <h1>Servidor indisponivel</h1>
-        <p>
+      <Card className="server-offline-card">
+        <Heading as="h1" size="7">
+          Servidor indisponivel
+        </Heading>
+        <Text as="p" color="gray">
           Nao foi possivel conectar com a API no momento. Verifique se o backend esta em execução e tente novamente.
-        </p>
-        <button type="button" className="btn btn-primary" onClick={handleRetry}>
+        </Text>
+        <Button type="button" size="3" onClick={handleRetry}>
           Tentar novamente
-        </button>
-      </section>
+        </Button>
+      </Card>
     </main>
   )
 }

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Button, Callout, Card, Heading, Text, TextField } from '@radix-ui/themes'
 import { api } from '../api/client'
 
 function ProfilePage() {
@@ -37,18 +38,20 @@ function ProfilePage() {
     <div className="dashboard-grid">
       <section className="page-header">
         <div>
-          <h2>Meu Perfil</h2>
-          <p>Atualize seus dados e mantenha sua conta segura.</p>
+          <Heading as="h2" size="6">
+            Meu Perfil
+          </Heading>
+          <Text color="gray">Atualize seus dados e mantenha sua conta segura.</Text>
         </div>
       </section>
 
-      <section className="card shadow-sm">
+      <Card>
         <form onSubmit={handleSubmit} className="grid-form">
           <label htmlFor="nome">Nome</label>
-          <input id="nome" value={profile.nome} onChange={(e) => setProfile((p) => ({ ...p, nome: e.target.value }))} />
+          <TextField.Root id="nome" value={profile.nome} onChange={(e) => setProfile((p) => ({ ...p, nome: e.target.value }))} />
 
           <label htmlFor="email">Email</label>
-          <input
+          <TextField.Root
             id="email"
             type="email"
             value={profile.email}
@@ -56,18 +59,18 @@ function ProfilePage() {
           />
 
           <label htmlFor="role">Perfil</label>
-          <input id="role" value={profile.role} disabled />
+          <TextField.Root id="role" value={profile.role} disabled />
 
           <label htmlFor="senha">Nova senha (opcional)</label>
-          <input id="senha" type="password" value={senha} onChange={(e) => setSenha(e.target.value)} />
+          <TextField.Root id="senha" type="password" value={senha} onChange={(e) => setSenha(e.target.value)} />
 
-          {error && <p className="error">{error}</p>}
-          {message && <p className="success">{message}</p>}
-          <button type="submit" className="btn btn-primary">
+          {error && <Callout.Root color="red">{error}</Callout.Root>}
+          {message && <Callout.Root color="green">{message}</Callout.Root>}
+          <Button type="submit" size="3">
             Salvar alteracoes
-          </button>
+          </Button>
         </form>
-      </section>
+      </Card>
     </div>
   )
 }

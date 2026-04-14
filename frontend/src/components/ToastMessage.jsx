@@ -1,12 +1,18 @@
+import * as Toast from '@radix-ui/react-toast'
+import { Cross1Icon } from '@radix-ui/react-icons'
+import { IconButton } from '@radix-ui/themes'
+
 export default function ToastMessage({ type = 'success', text, onClose }) {
   if (!text) return null
 
   return (
-    <div className={`toast toast-${type}`} role="status" aria-live="polite">
-      <span>{text}</span>
-      <button type="button" className="toast-close" onClick={onClose} aria-label="Fechar mensagem">
-        x
-      </button>
-    </div>
+    <Toast.Root className={`toast toast-${type}`} open={Boolean(text)} onOpenChange={(open) => !open && onClose?.()}>
+      <Toast.Title className="toast-title">{text}</Toast.Title>
+      <Toast.Close asChild>
+        <IconButton type="button" variant="ghost" color="gray" size="1" aria-label="Fechar mensagem">
+          <Cross1Icon />
+        </IconButton>
+      </Toast.Close>
+    </Toast.Root>
   )
 }

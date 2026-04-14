@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Button, Card, Heading, Select, Text, TextArea, TextField } from '@radix-ui/themes'
 import { api } from '../api/client'
 import StatusBadge from '../components/StatusBadge'
 import TableSkeleton from '../components/TableSkeleton'
-import ToastMessage from '../components/ToastMessage'
+import ToastStack from '../components/ToastStack'
 
 function ColaboradorDashboardPage() {
   const [payload, setPayload] = useState({ reservas: [], locais: [], recursos: [], locaisRecursos: [] })
@@ -76,8 +77,10 @@ function ColaboradorDashboardPage() {
     <div className="dashboard-grid">
       <section className="page-header">
         <div>
-          <h2>Dashboard do Colaborador</h2>
-          <p>Solicite novos espacos e acompanhe o andamento das suas reservas.</p>
+          <Heading as="h2" size="6">
+            Dashboard do Colaborador
+          </Heading>
+          <Text color="gray">Solicite novos espacos e acompanhe o andamento das suas reservas.</Text>
         </div>
       </section>
 
@@ -96,24 +99,28 @@ function ColaboradorDashboardPage() {
         </article>
       </section>
 
-      <section className="card">
-        <h2>Nova Reserva</h2>
+      <Card>
+        <Heading as="h2" size="5" mb="3">
+          Nova Reserva
+        </Heading>
         <form className="grid-form" onSubmit={handleSubmit}>
           <label htmlFor="localId">Local</label>
-          <select id="localId" value={form.localId} onChange={(e) => setForm((p) => ({ ...p, localId: e.target.value }))} required>
-            <option value="">Selecione</option>
-            {payload.locais.map((local) => (
-              <option key={local.id} value={local.id}>
-                {local.nome} - {local.bloco || 'Sem bloco'}
-              </option>
-            ))}
-          </select>
+          <Select.Root value={form.localId} onValueChange={(value) => setForm((p) => ({ ...p, localId: value }))} required>
+            <Select.Trigger id="localId" placeholder="Selecione" />
+            <Select.Content>
+              {payload.locais.map((local) => (
+                <Select.Item key={local.id} value={String(local.id)}>
+                  {local.nome} - {local.bloco || 'Sem bloco'}
+                </Select.Item>
+              ))}
+            </Select.Content>
+          </Select.Root>
 
           <label htmlFor="motivo">Motivo</label>
-          <textarea id="motivo" value={form.motivo} onChange={(e) => setForm((p) => ({ ...p, motivo: e.target.value }))} required />
+          <TextArea id="motivo" value={form.motivo} onChange={(e) => setForm((p) => ({ ...p, motivo: e.target.value }))} required />
 
           <label htmlFor="inicioPer">Inicio</label>
-          <input
+          <TextField.Root
             id="inicioPer"
             type="datetime-local"
             value={form.inicioPer}
@@ -122,7 +129,7 @@ function ColaboradorDashboardPage() {
           />
 
           <label htmlFor="fimPer">Fim</label>
-          <input
+          <TextField.Root
             id="fimPer"
             type="datetime-local"
             value={form.fimPer}
@@ -135,7 +142,7 @@ function ColaboradorDashboardPage() {
               {equipamentosDoLocal.map((item) => (
                 <label key={item.id}>
                   {recursoName(item.recursoId)} (max {item.quantidade})
-                  <input
+                  <TextField.Root
                     type="number"
                     min="0"
                     max={item.quantidade}
@@ -151,16 +158,18 @@ function ColaboradorDashboardPage() {
               ))}
             </div>
           )}
-          <button type="submit" className="btn btn-primary">
+          <Button type="submit" size="3">
             Solicitar Reserva
-          </button>
+          </Button>
         </form>
-      </section>
+      </Card>
 
-      <section className="card table-card">
-        <h2>Minhas Reservas</h2>
+      <Card className="table-card">
+        <Heading as="h2" size="5" mb="3">
+          Minhas Reservas
+        </Heading>
         <div className="table-wrap">
-          <table className="table table-hover table-sm mb-0">
+          <table className="app-table">
             <thead>
               <tr>
                 <th>ID</th>
@@ -186,12 +195,9 @@ function ColaboradorDashboardPage() {
             </tbody>
           </table>
         </div>
-      </section>
+      </Card>
 
-      <div className="toast-stack">
-        <ToastMessage type="error" text={error} onClose={() => setError('')} />
-        <ToastMessage type="success" text={message} onClose={() => setMessage('')} />
-      </div>
+      <ToastStack error={error} message={message} onClearError={() => setError('')} onClearMessage={() => setMessage('')} />
     </div>
   )
 }

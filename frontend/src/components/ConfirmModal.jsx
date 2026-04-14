@@ -1,26 +1,28 @@
-export default function ConfirmModal({ open, title, description, confirmLabel, onCancel, onConfirm, danger = false }) {
-  if (!open) return null
+import * as Dialog from '@radix-ui/react-dialog'
+import { Button, Flex, Text } from '@radix-ui/themes'
 
+export default function ConfirmModal({ open, title, description, confirmLabel, onCancel, onConfirm, danger = false }) {
   return (
-    <div className="modal-overlay" role="presentation" onClick={onCancel}>
-      <div
-        className="modal-card"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-title"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <h3 id="modal-title">{title}</h3>
-        <p>{description}</p>
-        <div className="modal-actions">
-          <button type="button" className="btn btn-outline-secondary" onClick={onCancel}>
-            Cancelar
-          </button>
-          <button type="button" className={danger ? 'btn btn-danger' : 'btn btn-primary'} onClick={onConfirm}>
-            {confirmLabel}
-          </button>
-        </div>
-      </div>
-    </div>
+    <Dialog.Root open={open} onOpenChange={(nextOpen) => !nextOpen && onCancel?.()}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="modal-overlay" />
+        <Dialog.Content className="modal-card" aria-describedby="confirm-description">
+          <Dialog.Title className="modal-title">{title}</Dialog.Title>
+          <Dialog.Description asChild>
+            <Text id="confirm-description" size="2" color="gray">
+              {description}
+            </Text>
+          </Dialog.Description>
+          <Flex justify="end" gap="2" mt="3">
+            <Button type="button" variant="soft" color="gray" onClick={onCancel}>
+              Cancelar
+            </Button>
+            <Button type="button" color={danger ? 'red' : 'cyan'} onClick={onConfirm}>
+              {confirmLabel}
+            </Button>
+          </Flex>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   )
 }
